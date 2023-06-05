@@ -1,26 +1,58 @@
 syntax = "proto3";
+
 package hello.hello;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "hello/hello/params.proto";
+import "hello/hello/people.proto";
 
 option go_package = "hello/x/hello/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/hello/hello/params";
+  
+  }
+  
+  // Queries a list of People items.
+  rpc People    (QueryGetPeopleRequest) returns (QueryGetPeopleResponse) {
+    option (google.api.http).get = "/hello/hello/people/{id}";
+  
+  }
+  rpc PeopleAll (QueryAllPeopleRequest) returns (QueryAllPeopleResponse) {
+    option (google.api.http).get = "/hello/hello/people";
+  
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryGetPeopleRequest {
+  uint64 id = 1;
+}
+
+message QueryGetPeopleResponse {
+  People People = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllPeopleRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPeopleResponse {
+  repeated People                                 People     = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+

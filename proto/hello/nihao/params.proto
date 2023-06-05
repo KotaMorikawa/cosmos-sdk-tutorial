@@ -1,0 +1,12 @@
+syntax = "proto3";
+package hello.nihao;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "hello/x/nihao/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+}

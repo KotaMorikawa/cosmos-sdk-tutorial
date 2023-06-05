@@ -106,6 +106,9 @@ import (
 	hellomodule "hello/x/hello"
 	hellomodulekeeper "hello/x/hello/keeper"
 	hellomoduletypes "hello/x/hello/types"
+	nihaomodule "hello/x/nihao"
+	nihaomodulekeeper "hello/x/nihao/keeper"
+	nihaomoduletypes "hello/x/nihao/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "hello/app/params"
@@ -165,6 +168,7 @@ var (
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		hellomodule.AppModuleBasic{},
+		nihaomodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -239,6 +243,8 @@ type App struct {
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
 	HelloKeeper hellomodulekeeper.Keeper
+
+	NihaoKeeper nihaomodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -284,6 +290,7 @@ func New(
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		icacontrollertypes.StoreKey,
 		hellomoduletypes.StoreKey,
+		nihaomoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -503,6 +510,14 @@ func New(
 	)
 	helloModule := hellomodule.NewAppModule(appCodec, app.HelloKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.NihaoKeeper = *nihaomodulekeeper.NewKeeper(
+		appCodec,
+		keys[nihaomoduletypes.StoreKey],
+		keys[nihaomoduletypes.MemStoreKey],
+		app.GetSubspace(nihaomoduletypes.ModuleName),
+	)
+	nihaoModule := nihaomodule.NewAppModule(appCodec, app.NihaoKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -569,6 +584,7 @@ func New(
 		transferModule,
 		icaModule,
 		helloModule,
+		nihaoModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -599,6 +615,7 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		hellomoduletypes.ModuleName,
+		nihaomoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -624,6 +641,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		hellomoduletypes.ModuleName,
+		nihaomoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -654,6 +672,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		hellomoduletypes.ModuleName,
+		nihaomoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -684,6 +703,7 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
 		helloModule,
+		nihaoModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -889,6 +909,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(hellomoduletypes.ModuleName)
+	paramsKeeper.Subspace(nihaomoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

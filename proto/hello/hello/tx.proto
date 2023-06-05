@@ -1,7 +1,49 @@
 syntax = "proto3";
+
 package hello.hello;
+
+import "hello/hello/people.proto";
 
 option go_package = "hello/x/hello/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc Greeting     (MsgGreeting    ) returns (MsgGreetingResponse    );
+  rpc CreatePeople (MsgCreatePeople) returns (MsgCreatePeopleResponse);
+  rpc UpdatePeople (MsgUpdatePeople) returns (MsgUpdatePeopleResponse);
+  rpc DeletePeople (MsgDeletePeople) returns (MsgDeletePeopleResponse);
+}
+message MsgGreeting {
+  string creator     = 1;
+  string fromAddress = 2;
+  string toAddress   = 3;
+}
+
+message MsgGreetingResponse {}
+
+message MsgCreatePeople {
+  string creator = 1;
+  string address = 2;
+  string name    = 3;
+}
+
+message MsgCreatePeopleResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdatePeople {
+  string creator = 1;
+  uint64 id      = 2;
+  string address = 3;
+  string name    = 4;
+}
+
+message MsgUpdatePeopleResponse {}
+
+message MsgDeletePeople {
+  string creator = 1;
+  uint64 id      = 2;
+}
+
+message MsgDeletePeopleResponse {}
+
